@@ -5,7 +5,7 @@
 
 ENCOGE is a small Python tool that **compresses a video to a target file size** using two-pass `libx264` encoding. It calculates the bitrate budget automatically from the requested size, duration, audio bitrate, and overhead.
 
-In other words, you can say "I want this video to be around 10 MB" and ENCOGE will do its best to meet that target while preserving quality.
+In other words, you can say **"I want this video to be around 10 MB"** and ENCOGE will do its best to meet that target while preserving quality.
 
 ## What it does?
 
@@ -16,7 +16,8 @@ In other words, you can say "I want this video to be around 10 MB" and ENCOGE wi
 - runs a two-pass `ffmpeg` encode
 - removes temporary two-pass log files after encoding
 
-If you want the mathematical background, unit conversions, and bitrate formulas, see [LEARN.md](./LEARN.md).
+> [!NOTE]
+> If you want the mathematical background, unit conversions, and bitrate formulas, see [LEARN.md](./LEARN.md).
 
 ## Why?
 
@@ -28,6 +29,10 @@ I wanted to share game clips to my friends in Discord, but the original files we
 - `ffmpeg` in `PATH`
 - `ffprobe` in `PATH`
 - `ffmpeg-python` installed in the active Python environment
+
+### Installations
+
+Install `ffmpeg` (and `ffprobe`) in your system using your package manager or from the [official website](https://ffmpeg.org/download.html).
 
 Install the Python dependency with:
 
@@ -49,18 +54,18 @@ pip install -r requirements.txt
 python encoge.py <input_file> [options]
 ```
 
-## Options
+### Options
 
 | Option | Description | Default |
 |---|---|---|
 | `-t`, `--target_size_mb` | Target output size in MB | `10` |
-| `-O`, `--overhead` | Reserved percentage for container overhead | `0.03` |
+| `-O`, `--overhead` | Reserved percentage for container overhead | `0.05` |
 | `-o`, `--output` | Output file name | `<input_name>__COMP.<ext>` |
 | `-a`, `--target_audio_kbps` | Target audio bitrate in kbps | Original audio bitrate |
 | `-f`, `--force` | Overwrite output file if it already exists | `false` |
 | `-p`, `--probe` | Probe the file and print information without compressing | `false` |
 
-## Examples
+### Examples
 
 Compress a video to the default target size:
 
