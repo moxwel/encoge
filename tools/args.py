@@ -4,12 +4,12 @@ from pathlib import Path
 def parse_args():
     arg_parser = argparse.ArgumentParser(description="Compress video file to target size.")
     arg_parser.add_argument("input_file", help="Input video file")
-    arg_parser.add_argument("--target_size_mb", "-t", type=int, default=10, help="Target size in MB")
-    arg_parser.add_argument("--overhead", "-O", type=float, default=0.05, help="Overhead percentage (0 - 1)")
-    arg_parser.add_argument("--output", "-o", type=str, default=None, help="Output file name")
-    arg_parser.add_argument("--target_audio_kbps", "-a", type=int, default=None, help="Target audio bitrate in kbps")
-    arg_parser.add_argument("--force", "-f", action="store_true", help="Force overwrite of output file if it exists")
-    arg_parser.add_argument("--probe", "-p", action="store_true", help="Only probe the input file and print its info without compressing")
+    arg_parser.add_argument("--target_size_mb", "-t", type=int, default=10, help="Target size in MB. Default is 10 MB.")
+    arg_parser.add_argument("--overhead", "-O", type=float, default=0.05, help="Overhead percentage (0 - 1). Default is 0.05.")
+    arg_parser.add_argument("--output", "-o", type=str, default=None, help="Output file name w/ extension. Default is <filename>__COMP.<ext>")
+    arg_parser.add_argument("--target_audio_kbps", "-a", type=int, default=None, help="Target audio bitrate in kbps. Default is original audio bitrate.")
+    arg_parser.add_argument("--force", "-f", action="store_true", help="Force overwrite of output file if it exists.")
+    arg_parser.add_argument("--probe", "-p", action="store_true", help="Only probe the input file and print its info without compressing.")
     args = arg_parser.parse_args()
 
     # input file is valid?
