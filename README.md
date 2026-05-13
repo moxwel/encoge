@@ -30,7 +30,7 @@ I wanted to share game clips to my friends in Discord, but the original files we
 - `ffprobe` in `PATH`
 - `ffmpeg-python` installed in the active Python environment
 
-### Installations
+### Installation
 
 Install `ffmpeg` (and `ffprobe`) in your system using your package manager or from the [official website](https://ffmpeg.org/download.html).
 
