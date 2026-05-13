@@ -2,6 +2,7 @@ import ffmpeg
 import os
 import shutil
 from tools.unitman import bytes_to_mb
+from math import floor
 
 def check_ffmpeg():
     """Verifica que ffmpeg esté instalado y accesible"""
@@ -15,7 +16,7 @@ def get_media_info(input_file: str):
     try:
         probe = ffmpeg.probe(input_file)
 
-        duration_s = int(round(float(probe['format']['duration'])))
+        duration_s = int(floor(float(probe['format']['duration'])))
         file_size_bytes = int(probe['format']['size'])
         file_size_mb = bytes_to_mb(file_size_bytes)
 
@@ -23,10 +24,15 @@ def get_media_info(input_file: str):
         video_stream = next(s for s in probe['streams'] if s['codec_type'] == 'video')
         audio_stream = next(s for s in probe['streams'] if s['codec_type'] == 'audio')
 
-        video_bitrate = int(video_stream['bit_rate']) // 1000
-        audio_bitrate = int(audio_stream['bit_rate']) // 1000
+        video_kbps = int(video_stream['bit_rate']) // 1000
 
-        return file_size_mb, duration_s, video_bitrate, audio_bitrate
+        if audio_stream['bit_rate'] is None:
+            print("[!] No se pudo determinar el bitrate de audio. Se usará 44 kbps por defecto.")
+            audio_kbps = 44
+        else:
+            audio_kbps = int(audio_stream['bit_rate']) // 1000
+
+        return file_size_mb, duration_s, video_kbps, audio_kbps
     except (ffmpeg.Error, ValueError, StopIteration) as e:
         print(f"Error: {e}")
         raise
@@ -70,3 +76,9 @@ def compress_video(input_file: str, output_file: str, target_video_bitrate_kbps:
         )
     except ffmpeg.Error as e:
         print(f"Error: {e}")
+
+def clear_logs():
+    """Elimina los archivos de log generados por ffmpeg durante la compresión"""
+    for f in ["ffmpeg2pass-0.log", "ffmpeg2pass-0.log.mbtree"]:
+        if os.path.exists(f):
+            os.remove(f)

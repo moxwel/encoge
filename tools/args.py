@@ -9,7 +9,12 @@ def parse_args():
     arg_parser.add_argument("--output", "-o", type=str, default=None, help="Output file name")
     arg_parser.add_argument("--target_audio_kbps", "-a", type=int, default=None, help="Target audio bitrate in kbps")
     arg_parser.add_argument("--force", "-f", action="store_true", help="Force overwrite of output file if it exists")
+    arg_parser.add_argument("--probe", "-p", action="store_true", help="Only probe the input file and print its info without compressing")
     args = arg_parser.parse_args()
+
+    input_path = Path(args.input_file)
+    if not input_path.is_file():
+        raise ValueError(f"Input file '{args.input_file}' does not exist or is not a file.")
 
     if args.overhead < 0 or args.overhead >= 1:
         raise ValueError("Overhead percentage must be between 0 and 1 (exclusive).")

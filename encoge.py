@@ -1,5 +1,5 @@
 from tools.args import parse_args
-from tools.funcs import check_ffmpeg, get_media_info, compress_video
+from tools.funcs import check_ffmpeg, get_media_info, compress_video, clear_logs
 from tools.unitman import calculate_target_bitrate, mb_to_kbits, mb_to_kbps
 
 def main():
@@ -38,13 +38,27 @@ def main():
     print(f"    - Target file bitrate : {target_file_kbps} kbps")
     print(f"    - Target video bitrate: {target_v_kbps} kbps")
 
+    if target_size_mb >= file_size_mb:
+        print(f"Error: Target file size is higher than or equal to the original video bitrate.")
+        return 1
+
     if target_v_kbps <= 4:
         print(f"Error: Target video bitrate is too low. Please choose a larger target size or lower audio bitrate with -a.")
         return 1
 
-    print(f"Output file: {args.output}")
-    compress_video(args.input_file, args.output, target_v_kbps, target_a_kbps)
+    if target_v_kbps <= file_v_kbps * 0.5:
+        print(f"Warning: Target video bitrate is less than 50% of the original. This may result in significant quality loss.")
 
+    print(f"Output file: {args.output}")
+
+    if not args.probe:
+        compress_video(args.input_file, args.output, target_v_kbps, target_a_kbps)
+        clear_logs()
+    else:
+        print("Probe mode enabled. No compression will be performed.")
+
+    print("Done.")
+    return 0
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,5 @@
+from math import floor
+
 '''
 kb = kilobytes
 mb = megabytes
@@ -31,7 +33,7 @@ def mb_to_kbps(mb: int, duration_s: int):
 
 def calculate_target_bitrate(target_size_mb: int, duration_s: int, overhead_p: float, audio_kbps: int):
     """Calcula los bitrates objetivo para video y audio dado el tamaño objetivo, duración, overhead y bitrate de audio"""
-    target_kbits = mb_to_kbits(round(target_size_mb * (1 - overhead_p)))
+    target_kbits = mb_to_kbits(floor(target_size_mb * (1 - overhead_p)))
     target_kbps = kbits_to_kbps(target_kbits, duration_s)
     target_v_kbps = target_kbps - audio_kbps
     return target_v_kbps, target_kbps
