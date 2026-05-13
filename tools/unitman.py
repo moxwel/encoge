@@ -1,39 +1,43 @@
 from math import floor
 
-'''
-kb = kilobytes
-mb = megabytes
-kbits = kilobits
-kbps = kilobits por segundo
-'''
+"""
+Unit conversion utilities for video compression calculations:
 
-def bytes_to_kb(bytes: int):
-    """Convierte bytes a kilobytes (base 2)"""
-    return bytes // 1024
+- kB: kilobyte
+- MB: megabyte
+- kbit: kilobit
+- kbps: kilobit per second
 
-def kb_to_mb(kb: int):
-    """Convierte kilobytes a megabytes (base 2)"""
-    return kb // 1024
+NOTE: All conversions are based on base 2 (1 kB = 1024 bytes, 1 MB = 1024 kB, etc.)
+"""
 
-def bytes_to_mb(bytes: int):
-    """Convierte bytes a megabytes (base 2)"""
-    return kb_to_mb(bytes_to_kb(bytes))
+def B_to_kB(B: int):
+    """Converts bytes to kilobytes (1024 bytes = 1 kB)."""
+    return B // 1024
 
-def mb_to_kbits(mb: int):
-    """Convierte megabytes a kilobits (base 2)"""
-    return mb * 8192
+def kB_to_MB(kB: int):
+    """Converts kilobytes to megabytes (1024 kB = 1 MB)."""
+    return kB // 1024
 
-def kbits_to_kbps(kbits: int, duration_s: int):
-    """Convierte kilobits a kilobits por segundo dado una duración en segundos"""
-    return kbits // duration_s
+def B_to_MB(B: int):
+    """Converts bytes to megabytes."""
+    return kB_to_MB(B_to_kB(B))
 
-def mb_to_kbps(mb: int, duration_s: int):
-    """Convierte megabytes a kilobits por segundo dado una duración en segundos"""
-    return kbits_to_kbps(mb_to_kbits(mb), duration_s)
+def MB_to_kbit(MB: int):
+    """Converts megabytes to kilobits (1 MB = 8192 kbit)."""
+    return MB * 8192
+
+def kbit_to_kbps(kbits: int, sec: int):
+    """Converts kilobits to kilobits per second given duration in seconds."""
+    return kbits // sec
+
+def MB_to_kbps(MB: int, sec: int):
+    """Converts megabytes to kilobits per second given duration in seconds."""
+    return kbit_to_kbps(MB_to_kbit(MB), sec)
 
 def calculate_target_bitrate(target_size_mb: int, duration_s: int, overhead_p: float, audio_kbps: int):
-    """Calcula los bitrates objetivo para video y audio dado el tamaño objetivo, duración, overhead y bitrate de audio"""
-    target_kbits = mb_to_kbits(floor(target_size_mb * (1 - overhead_p)))
-    target_kbps = kbits_to_kbps(target_kbits, duration_s)
+    """Calculates target bitrates for video and overall file based on target size, duration, overhead percentage and audio bitrate."""
+    target_kbits = MB_to_kbit(floor(target_size_mb * (1 - overhead_p)))
+    target_kbps = kbit_to_kbps(target_kbits, duration_s)
     target_v_kbps = target_kbps - audio_kbps
     return target_v_kbps, target_kbps

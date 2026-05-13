@@ -12,13 +12,17 @@ def parse_args():
     arg_parser.add_argument("--probe", "-p", action="store_true", help="Only probe the input file and print its info without compressing")
     args = arg_parser.parse_args()
 
+    # input file is valid?
     input_path = Path(args.input_file)
     if not input_path.is_file():
         raise ValueError(f"Input file '{args.input_file}' does not exist or is not a file.")
 
+    # overhead percentage is valid?
     if args.overhead < 0 or args.overhead >= 1:
         raise ValueError("Overhead percentage must be between 0 and 1 (exclusive).")
 
+    # handle output file name
+    # append __COMP to input file name if output is not specified
     if args.output is None:
         input_path = Path(args.input_file)
         args.output = f"{input_path.stem}__COMP{input_path.suffix}"
@@ -29,11 +33,10 @@ def parse_args():
         if not output_path.suffix:
             raise ValueError("Output file must have an extension.")
 
-    # archivo de salida existe?
+    # output file exists?
     output_path = Path(args.output)
     if output_path.exists():
         if not args.force:
             raise ValueError(f"Output file '{args.output}' already exists. Please choose a different name or remove the existing file. Use -f to force overwrite.")
-
 
     return args
